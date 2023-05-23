@@ -1,0 +1,63 @@
+helm create myChart
+
+rm -rf mychart/templates/*
+
+create mychart/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mychart-configmap
+data:
+  myvalue: "Hello World"
+
+helm install full-coral ./mychart
+
+helm get manifest full-coral
+result ->  name: mychart-configmap
+
+change name to "name: {{ .Release.Name }}-configmap"
+helm install clunky-serval ./mychart
+result -> name: clunky-serval-configmap
+
+# not install but render templates and return output like "get" use "--dry-run"
+helm install --debug --dry-run goodly-guppy ./mychart
+
+helm install geared-marsupi ./mychart --dry-run --debug
+
+# override favoriteDrink
+helm install solid-vulture ./mychart --dry-run --debug --set favoriteDrink=slurm
+
+# have this
+livenessProbe:
+  httpGet:
+    path: /user/login
+    port: http
+  initialDelaySeconds: 120
+# and use this command to add "exec"
+# --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt]
+# helm install stable/drupal --set image=my-registry/drupal:0.1.0 --set livenessProbe.exec.command=[cat,docroot/CHANGELOG.txt] --set livenessProbe.httpGet=null
+# result like this
+livenessProbe:
+  httpGet:
+    path: /user/login
+    port: http
+  exec:
+    command:
+    - cat
+    - docroot/CHANGELOG.txt
+  initialDelaySeconds: 120
+# helm will use "exec" and set "httpGet" to null
+
+# use with for specify scoop
+# title is italics(ตัวเอียง)
+# use $ for reference to root if difference context it may mean variable(ประกาศตรงไหนใช้ได้แค่ตรงนั้น เหมือน variable ปกติ ไม่ได้ประกาศ variable เป็น global ตลอด)
+
+# alway use this?
+  {{- range $key, $val := .Values.favorite }}
+  {{ $key }}: {{ $val | quote }}
+  {{- end }}
+# result
+  drink: "coffee"
+  food: "pizza"
+
+helm install --dry-run --debug fair-worm ./mychart

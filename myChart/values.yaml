@@ -1,0 +1,14 @@
+favorite:
+  drink: coffee
+  food: pizza
+
+pizzaToppings:
+  ["Mushrooms", "Cheese", "Peppers", "Onions"]
+
+
+
+livenessProbe:
+  httpGet:
+    path: /user/login
+    port: http
+  initialDelaySeconds: 120
